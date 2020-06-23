@@ -8,6 +8,14 @@ RUN \
   apt-get install -y \
     dump1090-mutability
 
-EXPOSE 8080 30001 30002 30003 30004 30005 30104 
+EXPOSE 80 30001 30002 30003 30004 30005 30104 
 
-ENTRYPOINT ["dump1090-mutability", "--interactive","--net", "--net-sbs-port", "30003"]
+RUN apt-get -y install supervisor && \
+  mkdir -p /var/log/supervisor && \
+  mkdir -p /etc/supervisor/conf.d
+
+# supervisor base configuration
+ADD supervisor.conf /etc/supervisor.conf
+
+# default command
+CMD ["supervisord", "-c", "/etc/supervisor.conf"]
